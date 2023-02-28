@@ -17,8 +17,8 @@ class SDKAppOpen(private val context: Context) {
     interface SDKAppOpenListener {
         fun onAdLoaded() {}
         fun onAdFailedToLoad(msg: String) {}
-        fun onAdShowedFullScreenContent(){}
-        fun onAdDismissedFullScreenContent(isDisplayAd: Boolean){}
+        fun onAdShowedFullScreenContent() {}
+        fun onAdDismissedFullScreenContent(isDisplayAd: Boolean) {}
     }
 
     private var listener: SDKAppOpenListener? = null
@@ -61,6 +61,10 @@ class SDKAppOpen(private val context: Context) {
 
     fun isError(): Boolean {
         return isError
+    }
+
+    fun isShowing(): Boolean {
+        return isShowing
     }
 
     fun loadAd() {
