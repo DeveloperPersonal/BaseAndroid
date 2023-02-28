@@ -19,6 +19,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -46,4 +50,7 @@ dependencies {
     implementation "io.insert-koin:koin-android:3.1.5"
     testImplementation "io.insert-koin:koin-test:3.1.5"
     implementation "androidx.multidex:multidex:2.0.1"
+
+    implementation 'com.google.android.gms:play-services-ads:21.5.0'
+
 }
