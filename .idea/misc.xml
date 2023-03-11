@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3177083333333333" />
+        <entry key="datastore/src/main/res/drawable/bg_banner_ad.xml" value="0.296" />
       </map>
     </option>
   </component>

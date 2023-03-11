@@ -2,7 +2,7 @@ package com.datastore.sdk
 
 import com.google.android.gms.ads.AdRequest
 
-internal object SDKConfig {
+object SDKConfig {
 
     /*
 * <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
