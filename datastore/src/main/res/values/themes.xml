@@ -1,9 +1,7 @@
 <resources>
 
     <style name="scale">
-
         <item name="android:windowEnterAnimation">@anim/up_dialog</item>
         <item name="android:windowExitAnimation">@anim/out_dialog</item>
-
     </style>
 </resources>

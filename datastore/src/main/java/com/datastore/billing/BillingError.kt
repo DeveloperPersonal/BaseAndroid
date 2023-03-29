@@ -1,0 +1,9 @@
+package com.datastore.billing
+
+enum class BillingError {
+    BUY_ERROR_SKU_DETAILS_LIST_CACHE_EMPTY,
+    BUY_ERROR_PRODUCT_ID_NOT_FOUND,
+    BUY_ERROR_USER_CANCELED,
+    BUY_ERROR_OTHER,
+    BILLING_ERROR_DISCONNECT
+}

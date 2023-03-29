@@ -36,6 +36,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),RepeatingJob.RepeatingJ
             }
         })
         sdkAppOpen.loadAd()*/
+
     }
 
     override fun onResume() {
