@@ -10,4 +10,6 @@ private val defaultModule = module {
     }
 }
 
-val koinModules = mutableListOf<Module>().add(defaultModule)
+val koinModules = mutableListOf<Module>().apply {
+    add(defaultModule)
+}
