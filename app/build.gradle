@@ -49,6 +49,6 @@ dependencies {
     implementation "io.insert-koin:koin-core:3.1.5"
     implementation "io.insert-koin:koin-android:3.1.5"
     testImplementation "io.insert-koin:koin-test:3.1.5"
-
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     implementation "com.android.billingclient:billing-ktx:4.1.0"
 }

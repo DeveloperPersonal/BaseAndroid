@@ -8,7 +8,7 @@ import com.datastore.sdk.SDKAppOpen
 import com.datastore.sdk.SDKBanner
 import com.letgo.databinding.ActivityMainBinding
 
-class MainActivity : BaseActivity<ActivityMainBinding>(),RepeatingJob.RepeatingJobListener {
+class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.RepeatingJobListener {
 
     private val sdkBanner by lazy {
         SDKBanner(this)
@@ -36,11 +36,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),RepeatingJob.RepeatingJ
             }
         })
         sdkAppOpen.loadAd()*/
-
+        startBillingConnection()
     }
 
     override fun onResume() {
-        repeatingJob.runJob(lifecycleScope,this)
+        repeatingJob.runJob(lifecycleScope, this)
         super.onResume()
     }
 

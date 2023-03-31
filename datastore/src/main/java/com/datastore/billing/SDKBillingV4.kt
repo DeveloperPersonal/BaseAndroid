@@ -20,7 +20,7 @@ internal class SDKBillingV4(private val baseActivity: BaseActivity<*>) :
     }
 
     private val skuDetailsListCache = mutableListOf<SkuDetails>()
-    private val billingList = emptyList<Billing>()
+    private val billingList = mutableListOf<Billing>()
     private var listener: SDKBillingV4Listener? = null
 
     private suspend fun onBillingSetupFinished() {
@@ -106,7 +106,9 @@ internal class SDKBillingV4(private val baseActivity: BaseActivity<*>) :
         }
     }
 
-    fun startConnection(listener: SDKBillingV4Listener? = null) {
+    fun startConnection(billingList: MutableList<Billing>, listener: SDKBillingV4Listener? = null) {
+        this.billingList.clear()
+        this.billingList.addAll(billingList)
         this.listener = listener
         billingClient.startConnection(this)
     }

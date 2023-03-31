@@ -30,7 +30,7 @@ abstract class BaseActivity<V : ViewDataBinding> : AppCompatActivity(),
     override val scope: Scope by createScope()
 
     private var resume = false
-    private val sdkBillingV4 by inject<SDKBillingV4>()
+    private val sdkBillingV4 by lazy { SDKBillingV4(this) }
 
     open val binding: V by lazy {
         DataBindingUtil.setContentView<V>(this, onLayoutId())
@@ -71,7 +71,7 @@ abstract class BaseActivity<V : ViewDataBinding> : AppCompatActivity(),
     }
 
     fun startBillingConnection() {
-        sdkBillingV4.startConnection(this)
+        sdkBillingV4.startConnection((application as BaseApplication).addBillings(), this)
     }
 
     fun buyBilling(productId: String) {

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
+import com.datastore.billing.Billing
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import org.koin.android.ext.koin.androidContext
@@ -16,6 +17,7 @@ abstract class BaseApplication : Application() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         startKoin {
             androidContext(applicationContext)
+            koinModules.add(defaultModule)
             koinModules.addAll(addKoinModules())
             modules(koinModules)
         }
@@ -34,6 +36,10 @@ abstract class BaseApplication : Application() {
     }
 
     open fun addDeviceTest(): MutableList<String> {
+        return mutableListOf()
+    }
+
+    open fun addBillings(): MutableList<Billing> {
         return mutableListOf()
     }
 }
