@@ -17,12 +17,11 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
         fun onAdLoaded() {}
         fun onAdFailedToLoad(msg: String) {}
         fun onAdShowedFullScreenContent() {}
-        fun onAdDismissedFullScreenContent(isDisplayAd: Boolean) {}
+        fun onAdDismissedFullScreenContent(isAdDisplay: Boolean) {}
     }
 
     private var listener: SDKInterListener? = null
     private var interstitialAd: InterstitialAd? = null
-
     private var isLoadingAd = false
     private var isError = false
     private var isShowing = false

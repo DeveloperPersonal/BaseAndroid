@@ -59,7 +59,7 @@ class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
     }
 
     fun showAd(): Boolean {
-        if (sdkInterAdMob.isAdError() && sdkInterAdMob.isAdError()) {
+        if (sdkInterAdMob.isAdError() && sdkInterGaMob.isAdError()) {
             return false
         }
         return when (priority) {
