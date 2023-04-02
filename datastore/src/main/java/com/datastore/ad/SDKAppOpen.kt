@@ -1,10 +1,8 @@
-package com.datastore.sdk
+package com.datastore.ad
 
-import android.app.Activity
-import android.content.Context
 import com.datastore.BaseActivity
 import com.datastore.BuildConfig
-import com.datastore.sdk.SDKConfig.ID_UNIT_APP_OPEN_TEST
+import com.datastore.ad.SDKConfig.ID_UNIT_APP_OPEN_TEST
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
@@ -12,7 +10,7 @@ import com.google.android.gms.ads.appopen.AppOpenAd
 
 //implementation 'com.google.android.gms:play-services-ads:21.5.0'
 
-class SDKAppOpen(private val context: Context) {
+class SDKAppOpen(private val baseActivity: BaseActivity<*>) {
 
     interface SDKAppOpenListener {
         fun onAdLoaded() {}
@@ -27,22 +25,22 @@ class SDKAppOpen(private val context: Context) {
     private var isLoadingAd = false
     private var isError = false
     private var isShowing = false
-    private var isNextAdLoad = false
+    private var isAdRefresh = false
     private var idUnit: String = ""
 
     /**
      * Sau khi close quảng cáo có tiếp tục tải quảng cáo mới không
      *
-     * isNextAdLoad= true có tải tiếp
+     * isAdRefresh= true có tải tiếp
      *
      * và ngược lại
      * */
-    fun setNextAdLoad(isNextAdLoad: Boolean): SDKAppOpen {
-        this.isNextAdLoad = isNextAdLoad
+    fun setAdRefresh(isAdRefresh: Boolean): SDKAppOpen {
+        this.isAdRefresh = isAdRefresh
         return this
     }
 
-    fun setUnitId(idUnit: String): SDKAppOpen {
+    fun setAdUnitId(idUnit: String): SDKAppOpen {
         this.idUnit = idUnit
         if (BuildConfig.DEBUG) {
             this.idUnit = ID_UNIT_APP_OPEN_TEST
@@ -55,11 +53,11 @@ class SDKAppOpen(private val context: Context) {
         return this
     }
 
-    fun isLoadedAd(): Boolean {
+    fun isAdLoaded(): Boolean {
         return appOpenAd != null
     }
 
-    fun isError(): Boolean {
+    fun isAdError(): Boolean {
         return isError
     }
 
@@ -71,11 +69,11 @@ class SDKAppOpen(private val context: Context) {
         if (idUnit.isEmpty()) {
             throw NullPointerException("Advertising id cannot be blank")
         }
-        if (isLoadingAd || isLoadedAd()) return
+        if (isLoadingAd || isAdLoaded()) return
         isError = false
         isLoadingAd = true
         AppOpenAd.load(
-            context,
+            baseActivity,
             idUnit,
             SDKConfig.getAdRequest(), object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(p0: AppOpenAd) {
@@ -95,7 +93,7 @@ class SDKAppOpen(private val context: Context) {
     }
 
     fun showAd(activity: BaseActivity<*>) {
-        if (isError() || !isLoadedAd()) {
+        if (isAdError() || !isAdLoaded()) {
             listener?.onAdDismissedFullScreenContent(false)
             return
         }
@@ -109,14 +107,14 @@ class SDKAppOpen(private val context: Context) {
                 isShowing = false
                 listener?.onAdDismissedFullScreenContent(true)
                 clearAd()
-                if (isNextAdLoad) loadAd()
+                if (isAdRefresh) loadAd()
             }
 
             override fun onAdFailedToShowFullScreenContent(p0: AdError) {
                 isShowing = false
                 listener?.onAdDismissedFullScreenContent(false)
                 clearAd()
-                if (isNextAdLoad) loadAd()
+                if (isAdRefresh) loadAd()
             }
         }
         isShowing = true

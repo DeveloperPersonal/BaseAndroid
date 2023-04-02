@@ -1,0 +1,69 @@
+package com.datastore.ad
+
+import com.datastore.BaseActivity
+
+class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
+
+    private val sdkInterAdMob by lazy { SDKInter(baseActivity) }
+    private val sdkInterGaMob by lazy { SDKInter(baseActivity) }
+    private var priority = AdPriority.AD_MOD
+    private var oder = AdLoadOder.PARALLEL
+
+    fun setListener(listener: SDKInter.SDKInterListener) {
+        sdkInterAdMob.setListener(listener)
+        sdkInterGaMob.setListener(listener)
+    }
+
+    fun setAdPriority(priority: AdPriority): SDKInterLoss {
+        this.priority = priority
+        return this
+    }
+
+    fun setAdUnitId(idUnitAdMob: String, idUnitGaMob: String): SDKInterLoss {
+        sdkInterAdMob.setAdUnitId(idUnitAdMob)
+        sdkInterGaMob.setAdUnitId(idUnitGaMob)
+        return this
+    }
+
+    fun loadAd() {
+        when (oder) {
+            AdLoadOder.PARALLEL -> {
+                sdkInterAdMob.loadAd {
+                    if (sdkInterAdMob.isAdError()) {
+                        sdkInterGaMob.loadAd()
+                    }
+                }
+            }
+            AdLoadOder.SEQUENTIALLY -> {
+                sdkInterAdMob.loadAd()
+                sdkInterGaMob.loadAd()
+            }
+        }
+    }
+
+    fun showAd(): Boolean {
+        if (sdkInterAdMob.isAdError() && sdkInterAdMob.isAdError()) {
+            return false
+        }
+        return when (priority) {
+            AdPriority.AD_MOD -> {
+                if (sdkInterAdMob.isAdLoaded()) {
+                    sdkInterAdMob.showAd()
+                    true
+                } else if (sdkInterGaMob.isAdLoaded()) {
+                    sdkInterGaMob.showAd()
+                    true
+                } else false
+            }
+            AdPriority.GA_MOB -> {
+                if (sdkInterGaMob.isAdLoaded()) {
+                    sdkInterGaMob.showAd()
+                    true
+                } else if (sdkInterAdMob.isAdLoaded()) {
+                    sdkInterAdMob.showAd()
+                    true
+                } else false
+            }
+        }
+    }
+}

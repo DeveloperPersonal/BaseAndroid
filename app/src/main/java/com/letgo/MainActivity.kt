@@ -1,11 +1,10 @@
 package com.letgo
 
-import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import com.datastore.BaseActivity
 import com.datastore.job.RepeatingJob
-import com.datastore.sdk.SDKAppOpen
-import com.datastore.sdk.SDKBanner
+import com.datastore.ad.SDKAppOpen
+import com.datastore.ad.SDKBanner
 import com.letgo.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.RepeatingJobListener {
@@ -36,7 +35,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.Repeating
             }
         })
         sdkAppOpen.loadAd()*/
-        startBillingConnection()
     }
 
     override fun onResume() {
@@ -50,6 +48,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.Repeating
     }
 
     override fun onRepeatingJobChange(progress: Int) {
-        Log.i("tinhnv", "onRepeatingJobChange: $progress")
+
     }
 }

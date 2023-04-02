@@ -1,4 +1,4 @@
-package com.datastore.sdk
+package com.datastore.ad
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -6,19 +6,17 @@ import android.util.DisplayMetrics
 import android.view.WindowInsets
 import android.view.WindowMetrics
 import android.widget.FrameLayout
-import androidx.core.graphics.Insets
 import com.datastore.BaseActivity
 import com.datastore.BuildConfig
-import com.datastore.gone
-import com.datastore.sdk.SDKConfig.ID_UNIT_BANNER_ADMOB_TEST
-import com.datastore.sdk.SDKConfig.getAdRequest
+import com.datastore.ad.SDKConfig.ID_UNIT_BANNER_ADMOB_TEST
+import com.datastore.ad.SDKConfig.getAdRequest
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 
 
-class SDKBanner(private val activity: BaseActivity<*>) {
+class SDKBanner(private val baseActivity: BaseActivity<*>) {
 
     interface SDKBannerListener {
         fun onAdLoaded() {}
@@ -29,9 +27,19 @@ class SDKBanner(private val activity: BaseActivity<*>) {
     private var tryAgainIfError = false
     private var countTryAgainIfError = 0
     private var listener: SDKBannerListener? = null
+    private var idUnit: String = ""
 
-    fun setListener(listener: SDKBannerListener) {
+    fun setAdUnitId(idUnit: String): SDKBanner {
+        this.idUnit = idUnit
+        if (BuildConfig.DEBUG) {
+            this.idUnit = SDKConfig.ID_UNIT_APP_OPEN_TEST
+        }
+        return this
+    }
+
+    fun setListener(listener: SDKBannerListener): SDKBanner {
         this.listener = listener
+        return this
     }
 
     /**
@@ -42,21 +50,25 @@ class SDKBanner(private val activity: BaseActivity<*>) {
     }
 
     @SuppressLint("MissingPermission")
-    fun loadAd(adContainerView: FrameLayout, idUnit: String = ID_UNIT_BANNER_ADMOB_TEST) {
-        adView = AdView(activity).apply {
-            adUnitId = if (BuildConfig.DEBUG) ID_UNIT_BANNER_ADMOB_TEST else idUnit
-            setAdSize(activity.getAdSize(adContainerView))
+    fun loadAd(
+        adContainerView: FrameLayout,
+        adLoadError: (() -> Unit)? = null
+    ) {
+        adView = AdView(baseActivity).apply {
+            adUnitId = idUnit
+            setAdSize(baseActivity.getAdSize(adContainerView))
             adListener = object : AdListener() {
                 override fun onAdLoaded() {
                     listener?.onAdLoaded()
                 }
 
                 override fun onAdFailedToLoad(p0: LoadAdError) {
+                    if (!baseActivity.exist()) return
                     if (tryAgainIfError && countTryAgainIfError <= 2) {
                         countTryAgainIfError++
-                        loadAd(adContainerView, idUnit)
+                        loadAd(adContainerView)
                     } else {
-                        adContainerView.gone()
+                        adLoadError?.let { it() }
                         listener?.onAdFailedToLoad()
                     }
                 }

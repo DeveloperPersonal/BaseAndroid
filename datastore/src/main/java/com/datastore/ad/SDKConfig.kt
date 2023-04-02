@@ -1,4 +1,4 @@
-package com.datastore.sdk
+package com.datastore.ad
 
 import com.google.android.gms.ads.AdRequest
 
