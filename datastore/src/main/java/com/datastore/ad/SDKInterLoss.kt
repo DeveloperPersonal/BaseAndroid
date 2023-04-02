@@ -19,10 +19,27 @@ class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
         return this
     }
 
+    fun setAdLoadOder(oder: AdLoadOder): SDKInterLoss {
+        this.oder = oder
+        return this
+    }
+
     fun setAdUnitId(idUnitAdMob: String, idUnitGaMob: String): SDKInterLoss {
         sdkInterAdMob.setAdUnitId(idUnitAdMob)
         sdkInterGaMob.setAdUnitId(idUnitGaMob)
         return this
+    }
+
+    fun isAdLoaded(): Boolean {
+        return sdkInterAdMob.isAdLoaded() || sdkInterGaMob.isAdLoaded()
+    }
+
+    fun isAdShowing(): Boolean {
+        return sdkInterAdMob.isShowing() || sdkInterGaMob.isShowing()
+    }
+
+    fun isAdError(): Boolean {
+        return sdkInterAdMob.isAdError() && sdkInterGaMob.isAdError()
     }
 
     fun loadAd() {
