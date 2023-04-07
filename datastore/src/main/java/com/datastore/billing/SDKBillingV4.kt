@@ -130,7 +130,6 @@ internal class SDKBillingV4(private val baseActivity: BaseActivity<*>) :
     }
 
     fun consume(purchase: Purchase) {
-        if (!BuildConfig.DEBUG) return
         val build = ConsumeParams.newBuilder()
             .setPurchaseToken(purchase.purchaseToken)
             .build()
