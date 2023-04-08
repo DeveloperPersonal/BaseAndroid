@@ -86,11 +86,11 @@ abstract class BaseActivity<V : ViewDataBinding> : AppCompatActivity(),
         sdkBillingV4.consume(purchase)
     }
 
-    fun loadAd() {
+    open fun loadAd() {
 
     }
 
-    fun removeAd() {
+    open fun removeAd() {
 
     }
 }
