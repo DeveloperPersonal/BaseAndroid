@@ -25,4 +25,6 @@ interface SDKBillingV4Listener {
      * Có lỗi với Billing hoặc trong quá trình xử lí
      * */
     fun onSDKBillingV4Error(billingError: BillingError) {}
+
+    fun onSDKBillingFinished()
 }

@@ -2,7 +2,6 @@ package com.datastore.billing
 
 import com.android.billingclient.api.*
 import com.datastore.BaseActivity
-import com.datastore.BuildConfig
 import com.datastore.launchIO
 import com.datastore.launchMain
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +31,9 @@ internal class SDKBillingV4(private val baseActivity: BaseActivity<*>) :
         val subList = billingList.filter { it.billingStyle == BillingStyle.SUBS }
         if (subList.isNotEmpty()) {
             mOnBillingSetupFinished(subList, BillingClient.SkuType.SUBS)
+        }
+        withContext(Dispatchers.Main) {
+            listener?.onSDKBillingFinished()
         }
     }
 
@@ -66,6 +68,7 @@ internal class SDKBillingV4(private val baseActivity: BaseActivity<*>) :
                 }
             }
         }
+
     }
 
     private suspend fun onBillingResult(result: BillingResult, list: List<Purchase?>) {
