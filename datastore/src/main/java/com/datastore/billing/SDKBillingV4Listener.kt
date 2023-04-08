@@ -26,5 +26,5 @@ interface SDKBillingV4Listener {
      * */
     fun onSDKBillingV4Error(billingError: BillingError) {}
 
-    fun onSDKBillingFinished()
+    fun onSDKBillingFinished() {}
 }
