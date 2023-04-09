@@ -1,5 +1,6 @@
 package com.datastore.ad
 
+import android.content.Context
 import com.datastore.BaseActivity
 import com.datastore.BuildConfig
 import com.datastore.ad.SDKConfig.ID_UNIT_APP_OPEN_TEST
@@ -10,7 +11,7 @@ import com.google.android.gms.ads.appopen.AppOpenAd
 
 //implementation 'com.google.android.gms:play-services-ads:21.5.0'
 
-class SDKAppOpen(private val baseActivity: BaseActivity<*>) {
+class SDKAppOpen(private val context: Context) {
 
     interface SDKAppOpenListener {
         fun onAdLoaded() {}
@@ -61,11 +62,11 @@ class SDKAppOpen(private val baseActivity: BaseActivity<*>) {
         return isError
     }
 
-    fun isShowing(): Boolean {
+    fun isAdShowing(): Boolean {
         return isShowing
     }
 
-    fun loadAd() {
+    fun loadAd(complete: (() -> Unit)? = null) {
         if (idUnit.isEmpty()) {
             throw NullPointerException("Advertising id cannot be blank")
         }
@@ -73,13 +74,14 @@ class SDKAppOpen(private val baseActivity: BaseActivity<*>) {
         isError = false
         isLoadingAd = true
         AppOpenAd.load(
-            baseActivity,
+            context,
             idUnit,
             SDKConfig.getAdRequest(), object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(p0: AppOpenAd) {
                     isError = false
                     appOpenAd = p0
                     isLoadingAd = false
+                    complete?.let { it() }
                     listener?.onAdLoaded()
                 }
 
@@ -87,6 +89,7 @@ class SDKAppOpen(private val baseActivity: BaseActivity<*>) {
                     isError = true
                     appOpenAd = null
                     isLoadingAd = false
+                    complete?.let { it() }
                     listener?.onAdFailedToLoad(p0.message)
                 }
             })

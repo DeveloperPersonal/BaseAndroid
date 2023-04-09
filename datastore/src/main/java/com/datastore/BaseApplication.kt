@@ -42,4 +42,8 @@ abstract class BaseApplication : Application() {
     open fun addBillings(): MutableList<Billing> {
         return mutableListOf()
     }
+
+    open fun isPremium(): Boolean {
+        return false
+    }
 }
