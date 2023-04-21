@@ -1,57 +1,47 @@
 package com.datastore.ad
 
 import com.datastore.BaseActivity
-import com.datastore.BuildConfig
-import com.datastore.ad.SDKConfig.ID_UNIT_APP_OPEN_TEST
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import java.util.concurrent.atomic.AtomicBoolean
 
-//implementation 'com.google.android.gms:play-services-ads:21.5.0'
+class SDKRewarded(private val baseActivity: BaseActivity<*>) {
 
-class SDKInter(private val baseActivity: BaseActivity<*>) {
-
-    interface SDKInterListener {
+    interface SDKRewardedListener {
         fun onAdLoaded() {}
         fun onAdFailedToLoad(msg: String) {}
         fun onAdShowedFullScreenContent() {}
-        fun onAdDismissedFullScreenContent(isAdDisplay: Boolean) {}
+        fun onAdDismissedFullScreenContent(isRewardedItem: Boolean) {}
     }
 
-    private var listener: SDKInterListener? = null
-    private var interstitialAd: InterstitialAd? = null
+    private var listener: SDKRewarded.SDKRewardedListener? = null
+    private var rewardedAd: RewardedAd? = null
     private var isLoadingAd = false
     private var isError = false
     private var isShowing = false
     private var isAdRefresh = false
     private var idUnit: String = ""
 
-    /**
-     * Sau khi close quảng cáo có tiếp tục tải quảng cáo mới không
-     *
-     * isAdRefresh= true có tải tiếp
-     *
-     * và ngược lại
-     * */
-    fun setAdRefresh(isAdRefresh: Boolean): SDKInter {
+    fun setAdRefresh(isAdRefresh: Boolean): SDKRewarded {
         this.isAdRefresh = isAdRefresh
         return this
     }
 
-    fun setAdUnitId(idUnit: String): SDKInter {
+    fun setAdUnitId(idUnit: String): SDKRewarded {
         this.idUnit = idUnit
         return this
     }
 
-    fun setListener(listener: SDKInterListener): SDKInter {
+    fun setListener(listener: SDKRewarded.SDKRewardedListener): SDKRewarded {
         this.listener = listener
         return this
     }
 
     fun isAdLoaded(): Boolean {
-        return interstitialAd != null
+        return rewardedAd != null
     }
 
     fun isAdError(): Boolean {
@@ -69,13 +59,14 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
         if (isLoadingAd || isAdLoaded()) return
         isError = false
         isLoadingAd = true
-        InterstitialAd.load(
+        RewardedAd.load(
             baseActivity,
             idUnit,
-            SDKConfig.getAdRequest(), object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(p0: InterstitialAd) {
+            SDKConfig.getAdRequest(),
+            object : RewardedAdLoadCallback() {
+                override fun onAdLoaded(p0: RewardedAd) {
                     isError = false
-                    interstitialAd = p0
+                    rewardedAd = p0
                     isLoadingAd = false
                     complete?.let { it() }
                     listener?.onAdLoaded()
@@ -83,7 +74,7 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
 
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     isError = true
-                    interstitialAd = null
+                    rewardedAd = null
                     isLoadingAd = false
                     complete?.let { it() }
                     listener?.onAdFailedToLoad(p0.message)
@@ -92,11 +83,12 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
     }
 
     fun showAd() {
+        val isRewardedItem = AtomicBoolean(false)
         if (isAdError() || !isAdLoaded()) {
             listener?.onAdDismissedFullScreenContent(false)
             return
         }
-        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+        rewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {
                 isShowing = true
                 listener?.onAdShowedFullScreenContent()
@@ -104,20 +96,22 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
 
             override fun onAdDismissedFullScreenContent() {
                 isShowing = false
-                listener?.onAdDismissedFullScreenContent(true)
+                listener?.onAdDismissedFullScreenContent(isRewardedItem.get())
                 clearAd()
                 if (isAdRefresh) loadAd()
             }
 
             override fun onAdFailedToShowFullScreenContent(p0: AdError) {
                 isShowing = false
-                listener?.onAdDismissedFullScreenContent(false)
+                listener?.onAdDismissedFullScreenContent(isRewardedItem.get())
                 clearAd()
                 if (isAdRefresh) loadAd()
             }
         }
         isShowing = true
-        interstitialAd?.show(baseActivity)
+        rewardedAd?.show(baseActivity) {
+            isRewardedItem.set(true)
+        }
     }
 
     fun destroyAd() {
@@ -128,9 +122,8 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
     private fun clearAd() {
         isShowing = false
         isError = false
-        interstitialAd?.fullScreenContentCallback = null
-        interstitialAd = null
+        rewardedAd?.fullScreenContentCallback = null
+        rewardedAd = null
         isLoadingAd = false
     }
-
 }

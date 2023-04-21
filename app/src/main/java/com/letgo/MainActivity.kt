@@ -2,12 +2,18 @@ package com.letgo
 
 import androidx.lifecycle.lifecycleScope
 import com.datastore.BaseActivity
+import com.datastore.DebugLog
+import com.datastore.ad.AdLoadOder
+import com.datastore.ad.AdPriority
 import com.datastore.job.RepeatingJob
 import com.datastore.ad.SDKAppOpen
 import com.datastore.ad.SDKBanner
+import com.datastore.ad.SDKRewarded
+import com.datastore.ad.SDKRewardedLoss
 import com.letgo.databinding.ActivityMainBinding
 
-class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.RepeatingJobListener {
+class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.RepeatingJobListener,
+    SDKRewarded.SDKRewardedListener {
 
     private val sdkBanner by lazy {
         SDKBanner(this)
@@ -21,12 +27,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.Repeating
         RepeatingJob()
     }
 
+    private val sdkRewardedLoss by lazy {
+        SDKRewardedLoss(this)
+    }
+
     override fun onLayoutId(): Int {
         return R.layout.activity_main
     }
 
-    override fun onCreateUI() {
-        /*sdkBanner.setTryAgainIfError(true)
+    override fun onCreateUI() {/*sdkBanner.setTryAgainIfError(true)
         sdkBanner.loadAd(binding.frameLayout)
         sdkAppOpen.setNextAdLoad(true)
         sdkAppOpen.setUnitId("").setListener(object : SDKAppOpen.SDKAppOpenListener {
@@ -35,6 +44,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.Repeating
             }
         })
         sdkAppOpen.loadAd()*/
+        sdkRewardedLoss.setAdLoadOder(AdLoadOder.PARALLEL)
+        sdkRewardedLoss.setAdUnitId("ca-app-pub-3940256099942544/5224354917", "")
+        sdkRewardedLoss.setListener(this)
+        sdkRewardedLoss.loadAd()
     }
 
     override fun onResume() {
@@ -49,5 +62,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), RepeatingJob.Repeating
 
     override fun onRepeatingJobChange(progress: Int) {
 
+    }
+
+    override fun onAdDismissedFullScreenContent(isRewardedItem: Boolean) {
+        DebugLog.debugLog("isRewardedItem: $isRewardedItem")
+    }
+
+    override fun onAdLoaded() {
+        sdkRewardedLoss.showAd()
+    }
+
+    override fun onAdFailedToLoad(msg: String) {
+        DebugLog.debugLog(msg)
     }
 }

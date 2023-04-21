@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 fun BaseActivity<*>.launchMain(block: suspend CoroutineScope.() -> Unit): Job {
     return lifecycleScope.launch {
@@ -40,6 +41,18 @@ fun coroutineLaunchMain(block: suspend CoroutineScope.() -> Unit): Job {
 
 fun coroutineLaunchIO(block: suspend CoroutineScope.() -> Unit): Job {
     return CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
+        block()
+    }
+}
+
+suspend fun withContextMain(block: suspend CoroutineScope.() -> Unit) {
+    withContext(Dispatchers.Main) {
+        block()
+    }
+}
+
+suspend fun withContextIO(block: suspend CoroutineScope.() -> Unit) {
+    withContext(Dispatchers.IO) {
         block()
     }
 }
