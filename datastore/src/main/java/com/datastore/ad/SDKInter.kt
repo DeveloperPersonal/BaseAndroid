@@ -1,8 +1,7 @@
 package com.datastore.ad
 
-import com.datastore.BaseActivity
-import com.datastore.BuildConfig
-import com.datastore.ad.SDKConfig.ID_UNIT_APP_OPEN_TEST
+import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
@@ -11,7 +10,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 //implementation 'com.google.android.gms:play-services-ads:21.5.0'
 
-class SDKInter(private val baseActivity: BaseActivity<*>) {
+class SDKInter(private val context: Context) {
 
     interface SDKInterListener {
         fun onAdLoaded() {}
@@ -70,7 +69,7 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
         isError = false
         isLoadingAd = true
         InterstitialAd.load(
-            baseActivity,
+            context,
             idUnit,
             SDKConfig.getAdRequest(), object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(p0: InterstitialAd) {
@@ -91,7 +90,7 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
             })
     }
 
-    fun showAd() {
+    fun showAd(activity:AppCompatActivity) {
         if (isAdError() || !isAdLoaded()) {
             listener?.onAdDismissedFullScreenContent(false)
             return
@@ -117,7 +116,7 @@ class SDKInter(private val baseActivity: BaseActivity<*>) {
             }
         }
         isShowing = true
-        interstitialAd?.show(baseActivity)
+        interstitialAd?.show(activity)
     }
 
     fun destroyAd() {

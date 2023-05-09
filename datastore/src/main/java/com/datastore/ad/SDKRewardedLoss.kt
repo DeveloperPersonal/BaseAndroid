@@ -45,16 +45,16 @@ class SDKRewardedLoss(private val baseActivity: BaseActivity<*>) {
     fun loadAd() {
         when (oder) {
             AdLoadOder.PARALLEL -> {
+                sdkRewardedAdmob.loadAd()
+                sdkRewardedGaMob.loadAd()
+            }
+
+            AdLoadOder.SEQUENTIALLY -> {
                 sdkRewardedAdmob.loadAd {
                     if (sdkRewardedAdmob.isAdError()) {
                         sdkRewardedGaMob.loadAd()
                     }
                 }
-            }
-
-            AdLoadOder.SEQUENTIALLY -> {
-                sdkRewardedAdmob.loadAd()
-                sdkRewardedGaMob.loadAd()
             }
         }
     }

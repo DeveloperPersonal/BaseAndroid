@@ -1,11 +1,12 @@
 package com.datastore.ad
 
-import com.datastore.BaseActivity
+import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 
-class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
+class SDKInterLoss(private val context: Context) {
 
-    private val sdkInterAdMob by lazy { SDKInter(baseActivity) }
-    private val sdkInterGaMob by lazy { SDKInter(baseActivity) }
+    private val sdkInterAdMob by lazy { SDKInter(context) }
+    private val sdkInterGaMob by lazy { SDKInter(context) }
     private var priority = AdPriority.AD_MOD
     private var oder = AdLoadOder.SEQUENTIALLY
 
@@ -69,27 +70,27 @@ class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
         }
     }
 
-    fun showAd(): Boolean {
+    fun showAd(activity: AppCompatActivity): Boolean {
         if (sdkInterAdMob.isAdError() && sdkInterGaMob.isAdError()) {
             return false
         }
         return when (priority) {
             AdPriority.AD_MOD -> {
                 if (sdkInterAdMob.isAdLoaded()) {
-                    sdkInterAdMob.showAd()
+                    sdkInterAdMob.showAd(activity)
                     true
                 } else if (sdkInterGaMob.isAdLoaded()) {
-                    sdkInterGaMob.showAd()
+                    sdkInterGaMob.showAd(activity)
                     true
                 } else false
             }
 
             AdPriority.GA_MOB -> {
                 if (sdkInterGaMob.isAdLoaded()) {
-                    sdkInterGaMob.showAd()
+                    sdkInterGaMob.showAd(activity)
                     true
                 } else if (sdkInterAdMob.isAdLoaded()) {
-                    sdkInterAdMob.showAd()
+                    sdkInterAdMob.showAd(activity)
                     true
                 } else false
             }
