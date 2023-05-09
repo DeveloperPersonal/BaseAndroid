@@ -7,7 +7,7 @@ class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
     private val sdkInterAdMob by lazy { SDKInter(baseActivity) }
     private val sdkInterGaMob by lazy { SDKInter(baseActivity) }
     private var priority = AdPriority.AD_MOD
-    private var oder = AdLoadOder.PARALLEL
+    private var oder = AdLoadOder.SEQUENTIALLY
 
     fun setListener(listener: SDKInter.SDKInterListener) {
         sdkInterAdMob.setListener(listener)
@@ -47,19 +47,24 @@ class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
         return sdkInterAdMob.isAdError() && sdkInterGaMob.isAdError()
     }
 
+    fun destroyAd() {
+        sdkInterAdMob.destroyAd()
+        sdkInterGaMob.destroyAd()
+    }
+
     fun loadAd() {
         when (oder) {
             AdLoadOder.PARALLEL -> {
+                sdkInterAdMob.loadAd()
+                sdkInterGaMob.loadAd()
+            }
+
+            AdLoadOder.SEQUENTIALLY -> {
                 sdkInterAdMob.loadAd {
                     if (sdkInterAdMob.isAdError()) {
                         sdkInterGaMob.loadAd()
                     }
                 }
-            }
-
-            AdLoadOder.SEQUENTIALLY -> {
-                sdkInterAdMob.loadAd()
-                sdkInterGaMob.loadAd()
             }
         }
     }
