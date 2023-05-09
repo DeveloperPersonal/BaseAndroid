@@ -14,6 +14,11 @@ class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
         sdkInterGaMob.setListener(listener)
     }
 
+    fun setAdRefresh(isAdRefresh: Boolean) {
+        sdkInterAdMob.setAdRefresh(isAdRefresh)
+        sdkInterGaMob.setAdRefresh(isAdRefresh)
+    }
+
     fun setAdPriority(priority: AdPriority): SDKInterLoss {
         this.priority = priority
         return this
@@ -51,6 +56,7 @@ class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
                     }
                 }
             }
+
             AdLoadOder.SEQUENTIALLY -> {
                 sdkInterAdMob.loadAd()
                 sdkInterGaMob.loadAd()
@@ -72,6 +78,7 @@ class SDKInterLoss(private val baseActivity: BaseActivity<*>) {
                     true
                 } else false
             }
+
             AdPriority.GA_MOB -> {
                 if (sdkInterGaMob.isAdLoaded()) {
                     sdkInterGaMob.showAd()
