@@ -17,7 +17,7 @@ object SDKUnity {
         UnityAds.initialize(
             context,
             gameId,
-            BuildConfig.DEBUG,
+            false,
             object : IUnityAdsInitializationListener {
                 override fun onInitializationComplete() {
                     block()
@@ -31,17 +31,18 @@ object SDKUnity {
             })
     }
 
-    fun loadInter(unitId: String) {
-        if (placementId.isNotEmpty()) return
+    fun loadInter(unitId: String, block: (String) -> Unit) {
         placementId = ""
         UnityAds.load(unitId, object : IUnityAdsLoadListener {
             override fun onUnityAdsAdLoaded(placementId: String?) {
                 SDKUnity.placementId = placementId ?: ""
+                block("true")
             }
 
             override fun onUnityAdsFailedToLoad(
                 placementId: String?, error: UnityAds.UnityAdsLoadError?, message: String?
             ) {
+                block("false: $message")
                 SDKUnity.placementId = ""
             }
         })
@@ -55,7 +56,7 @@ object SDKUnity {
                 placementId: String?, error: UnityAds.UnityAdsShowError?, message: String?
             ) {
                 SDKUnity.placementId =""
-                loadInter(unitId)
+                loadInter(unitId){}
             }
 
             override fun onUnityAdsShowStart(placementId: String?) {
@@ -70,7 +71,7 @@ object SDKUnity {
                 placementId: String?, state: UnityAds.UnityAdsShowCompletionState?
             ) {
                 SDKUnity.placementId =""
-                loadInter(unitId)
+                loadInter(unitId){}
                 block()
             }
 
