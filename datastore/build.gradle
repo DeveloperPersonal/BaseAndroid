@@ -54,5 +54,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:21.5.0'
     implementation "com.android.billingclient:billing-ktx:4.1.0"
     implementation 'com.unity3d.ads:unity-ads:4.6.0'
-
+    implementation 'com.ironsource.sdk:mediationsdk:7.3.1'
 }
